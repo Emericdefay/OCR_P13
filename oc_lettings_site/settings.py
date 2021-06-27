@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     # Project apps
     'oc_lettings_site.apps.OCLettingsSiteConfig',
     'lettings.apps.LettingsConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [
