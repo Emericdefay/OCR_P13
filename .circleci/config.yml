@@ -23,10 +23,12 @@ workflows:
       - docking:
           requires:
             - compile-and-test
-          filters: # Build only on main branch
-            branches:
-              only: test
-
+          # filters: # Build only on main branch
+          #   branches:
+          #     only: test
+      - publish-on-dockerhub:
+          requires:
+            - docking
 
 jobs:
   compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
@@ -77,14 +79,14 @@ jobs:
       - run:
           name: Save docker image
           command: docker save -o image.tar $IMAGE_NAME
-      - persist_to_workplace:
+      - persist_to_workspace:
           root: .
           paths:
             - ./image.tar
   publish-on-dockerhub:
     executor: docker-publisher
     steps:
-      - attach_workplace:
+      - attach_workspace:
           at: /tmp/workplace
       - setup_remote_docker
       - run:
