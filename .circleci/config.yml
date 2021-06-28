@@ -84,7 +84,7 @@ jobs:
           command: docker build -t $IMAGE_NAME:latest .
   publish-on-dockerhub:
     environment:
-      IMAGE_NAME: on-lettings-site
+      IMAGE_NAME: emericdefay/on-lettings-site
     docker:
       - image : cimg/python:3.8
     steps:
