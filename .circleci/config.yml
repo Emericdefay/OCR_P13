@@ -67,7 +67,7 @@ jobs:
           command: python manage.py test
   docking: #
     environment:
-      IMAGE_NAME: emericdefay/oc-lettings-site-ci
+      IMAGE_NAME: emericdefay/oc-lettings-site
     docker:
       - image: cimg/python:3.8
         auth:
