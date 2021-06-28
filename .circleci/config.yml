@@ -30,6 +30,9 @@ workflows:
       - publish-on-dockerhub:
           requires:
             - docking
+      - get-image-and-run:
+          requires:
+            - publish-on-dockerhub
 
 jobs:
   compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
@@ -98,3 +101,10 @@ jobs:
           command: |
             docker login -u "emericdefay" -p "$DOCKERHUB_PASSWORD"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
+  get-image-and-run:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          echo "run image" | docker login --username "emericdefay" --password "$DOCKERHUB_PASSWORD"
+          docker run -p 8000:8000 $IMAGE_NAME:$CIRCLE_SHA1
