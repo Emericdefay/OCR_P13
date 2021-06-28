@@ -51,6 +51,11 @@ jobs:
           command: pip install -r requirements.txt
 
       - run:
+          name: Run test PEP8
+          # This assumes pytest is installed via the install-package step above
+          command: flake8
+          
+      - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
           command: python manage.py test
