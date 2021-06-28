@@ -14,11 +14,11 @@ workflows:
     jobs:
       - compile-and-test
       - docking:
-        requires:
-          - compile-and-test
-        filters: # Build only on main branch
-          branches:
-            only: test
+          requires:
+            - compile-and-test
+          filters: # Build only on main branch
+            branches:
+              only: test
 
 
 jobs:
