@@ -15,9 +15,11 @@ ENV PYTHINDONTWRITEBYTECODE 1
 
 # install reqs
 RUN pip install --upgrade pip
+RUN apt install docker-compose
 RUN pip install -r requirements.txt
 
 # Port where django app run
 EXPOSE 8000
 
 COPY . $DockerFolder
+CMD docker-compose up
