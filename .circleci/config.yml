@@ -37,6 +37,10 @@ jobs:
           command: python -m venv venv
           
       - run:
+          name: echo venv
+          # activate venv
+          command: ls /venv/
+      - run:
           name: Activate venv
           # activate venv
           command: source venv/Scripts/activate
