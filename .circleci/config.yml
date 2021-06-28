@@ -11,6 +11,7 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: emericdefay/oc-lettings-site
+      GIT_HASH: $(echo $CIRCLE_SHA1)
     docker:
       - image: cimg/python:3.8
 
@@ -75,7 +76,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker image
-          command: docker build -t $IMAGE_NAME:latest .
+          command: docker build -t $IMAGE_NAME:$GIT_HASH .
       - run:
           name: Save docker image
           command: docker save -o image.tar $IMAGE_NAME
@@ -96,4 +97,4 @@ jobs:
           name: push on dockerhub
           command: |
             docker login -u "emericdefay" -p "$DOCKERHUB_PASSWORD"
-            docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$GIT_HASH
