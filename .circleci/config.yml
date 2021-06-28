@@ -69,10 +69,13 @@ jobs:
     environment:
       IMAGE_NAME: emericdefay/oc-lettings-site-ci
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: cimg/python:3.8
+        auth:
+          username: emericdefay
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - setup_remote_docker
       - run:
         name: Build Website docker image
-        command: docker build -t $IMAGE_NAME:lastest
+        command: docker build -t $IMAGE_NAME:latest .
