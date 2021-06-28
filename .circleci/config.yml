@@ -75,6 +75,12 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: display test 1
+          command: echo $GIT_HASH
+      - run:
+          name: display test 2
+          command: echo $CIRCLE_SHA1
+      - run:
           name: Build docker image
           command: docker build -t $IMAGE_NAME:$GIT_HASH .
       - run:
