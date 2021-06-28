@@ -66,14 +66,13 @@ jobs:
           # This assumes pytest is installed via the install-package step above
           command: python manage.py test
   docking: #
-    build:
-      environment:
-        IMAGE_NAME: emericdefay/oc-lettings-site-ci
-      docker:
-        - image: circleci/buildpack-deps:stretch
-      steps:
-        - checkout
-        - setup_remote_docker
-        - run:
-          name: Build Website docker image
-          command: docker build -t $IMAGE_NAME:lastest
+    environment:
+      IMAGE_NAME: emericdefay/oc-lettings-site-ci
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+        name: Build Website docker image
+        command: docker build -t $IMAGE_NAME:lastest
