@@ -7,8 +7,8 @@ ENV PYTHONUNBUFFERED=1
 # set working directory
 WORKDIR /django
 
-# create folder
-COPY requirements.txt requirements.txt
+# copy into folder /django/
+COPY . /django/
 
 # install reqs
 RUN pip3 install -r requirements.txt
