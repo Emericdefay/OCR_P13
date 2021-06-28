@@ -7,6 +7,13 @@ orbs:
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
   python: circleci/python@1.2
 
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: emericdefay/oc-lettings-site
+    docker:
+      - image: cimg/python:3.8
+
 workflows:
   ci:  # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run. 
@@ -28,13 +35,7 @@ jobs:
     # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
     # The executor is the environment in which the steps below will be executed - below will use a python 3.9 container
     # Change the version below to your required version of python
-    docker:
-      - image: cimg/python:3.8
-    # Checkout the code as the first step. This is a dedicated CircleCI step.
-    # The python orb's install-packages step will install the dependencies from a Pipfile via Pipenv by default.
-    # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
+    executor: docker-publisher
     steps:
       - checkout
       - run:
@@ -66,29 +67,29 @@ jobs:
           # This assumes pytest is installed via the install-package step above
           command: python manage.py test
   docking: #
-    environment:
-      IMAGE_NAME: emericdefay/oc-lettings-site
-    docker:
-      - image: cimg/python:3.8
-        auth:
-          username: emericdefay
-          password: $DOCKERHUB_PASSWORD
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: check home/circleci
-          command: ls -a /home/circleci/project/
-      - run:
           name: Build docker image
           command: docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: Save docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workplace:
+          root: .
+          paths:
+            - ./image.tar
   publish-on-dockerhub:
-    environment:
-      IMAGE_NAME: emericdefay/on-lettings-site
-    docker:
-      - image : cimg/python:3.8
+    executor: docker-publisher
     steps:
+      - attach_workplace:
+          at: /tmp/workplace
       - setup_remote_docker
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           name: push on dockerhub
           command: |
