@@ -11,7 +11,7 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: emericdefay/oc-lettings-site
-      GIT_HASH: $(echo $CIRCLE_SHA1)
+      GIT_HASH: $CIRCLE_SHA1
     docker:
       - image: cimg/python:3.8
 
