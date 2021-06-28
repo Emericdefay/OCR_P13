@@ -23,4 +23,4 @@ EXPOSE 8000
 COPY . $DockerFolder
 
 # Start server
-CMD python manage.py runserver 8000
+CMD docker-compose up
