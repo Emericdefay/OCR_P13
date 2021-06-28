@@ -39,11 +39,11 @@ jobs:
       - run:
           name: echo venv
           # activate venv
-          command: ls venv/
+          command: ls venv/bin/
       - run:
           name: Activate venv
           # activate venv
-          command: source venv/Scripts/activate
+          command: source venv/bin/activate
 
       - run:
           name: Install reqs
