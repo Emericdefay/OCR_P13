@@ -75,14 +75,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: display test 1
-          command: echo $GIT_HASH
-      - run:
-          name: display test 2
-          command: echo $CIRCLE_SHA1
-      - run:
           name: Build docker image
-          command: docker build -t $IMAGE_NAME:$GIT_HASH .
+          command: docker build -t $IMAGE_NAME:$CIRCLE_SHA1 .
       - run:
           name: Save docker image
           command: docker save -o image.tar $IMAGE_NAME
@@ -103,4 +97,4 @@ jobs:
           name: push on dockerhub
           command: |
             docker login -u "emericdefay" -p "$DOCKERHUB_PASSWORD"
-            docker push $IMAGE_NAME:$GIT_HASH
+            docker push $IMAGE_NAME:$CIRCLE_SHA1
