@@ -76,7 +76,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: check home/circleci
-          command: ls /home/circleci/project/
+          command: ls -a /home/circleci/project/
       - run:
           name: Build docker image
           command: docker build -t emericdefay/oc-lettings-site:latest .
