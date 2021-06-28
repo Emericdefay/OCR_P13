@@ -87,7 +87,7 @@ jobs:
     executor: docker-publisher
     steps:
       - attach_workspace:
-          at: /tmp/workplace
+          at: /tmp/workspace
       - setup_remote_docker
       - run:
           name: Load saved docker image (image.tar)
