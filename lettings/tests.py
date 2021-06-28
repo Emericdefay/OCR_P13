@@ -39,7 +39,6 @@ class TestsLettings(TestCase):
         attempted_contain = b'<title>Lettings</title>'
         self.assertEqual(True, attempted_contain in response.content)
 
-
     def test_lettings_letting(self):
         """Getting a letting, page should contains:
         <title>{{ title }}</title>

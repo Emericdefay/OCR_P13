@@ -23,9 +23,9 @@ class TestsProfiles(TestCase):
         # Profile test
         profile = Profile(
             **{'id': 1,
-             'favorite_city': 'Test City',
-             'user_id': 1,
-             })
+               'favorite_city': 'Test City',
+               'user_id': 1,
+               })
         profile.save()
 
     def test_profiles_index(self):
@@ -35,7 +35,6 @@ class TestsProfiles(TestCase):
         response = self.client.get(reverse('profiles:index'))
         attempted_contain = b'<title>Profiles</title>'
         self.assertEqual(True, attempted_contain in response.content)
-
 
     def test_profiles_profile(self):
         """Getting a profile, page should contains:
