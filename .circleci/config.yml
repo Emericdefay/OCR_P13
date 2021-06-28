@@ -16,9 +16,9 @@ workflows:
       - docking:
         requires:
           - compile-and-test
-        # filters: # Build only on main branch
-        #   branches:
-        #     only: main
+        filters: # Build only on main branch
+          branches:
+            only: test
 
 
 jobs:
