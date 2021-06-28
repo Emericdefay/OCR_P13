@@ -66,8 +66,6 @@ jobs:
           # This assumes pytest is installed via the install-package step above
           command: python manage.py test
   docking: #
-    environment:
-      IMAGE_NAME: emericdefay/oc-lettings-site
     docker:
       - image: cimg/python:3.8
         auth:
@@ -78,4 +76,4 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker image
-          command: docker build -t $IMAGE_NAME:latest .
+          command: docker build -t emericdefay/oc-lettings-site:latest .
