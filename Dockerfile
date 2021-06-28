@@ -21,6 +21,3 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 COPY . $DockerFolder
-
-# Start server
-CMD docker-compose up
