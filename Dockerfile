@@ -1,9 +1,24 @@
+# Base image
 FROM python:3.8
-ENV PYTHINUNBUFFERED=1
+# setup env var
+ENV DockerFolder=/home/app/oc-lettings-site
 
-RUN apt-get update 
+# create folder
+RUN mkdir -p $DockerFolder
 
-WORKDIR /website
-COPY requirements.txt /website/
+# set working directory
+WORKDIR $DockerFolder
+
+# set env vars python
+ENV PYTHONUNBUFFERED 1
+ENV PYTHINDONTWRITEBYTECODE 1
+
+# install reqs
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY . /website/
+
+# Port where django app run
+EXPOSE 8000
+
+# Start server
+CMD python manage.py runserver 8000
