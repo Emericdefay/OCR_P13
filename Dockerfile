@@ -1,13 +1,13 @@
 # Base image
 FROM python:3.8
 # setup env var
-ENV DockerFolder=/home/app/oc-lettings-site
-
-# create folder
-RUN mkdir -p $DockerFolder
+ENV DockerFolder=/usr/src/app
 
 # set working directory
 WORKDIR $DockerFolder
+
+# create folder
+COPY requirements.txt ./
 
 # set env vars python
 ENV PYTHONUNBUFFERED 1
@@ -19,6 +19,8 @@ RUN pip install -r requirements.txt
 
 # Port where django app run
 EXPOSE 8000
+
+COPY . $DockerFolder
 
 # Start server
 CMD python manage.py runserver 8000
