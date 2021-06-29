@@ -105,13 +105,13 @@ jobs:
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker logout
-deploy-on-heroku:
-  machine: true
-  steps:
-    - checkout
-    - run:
-        command: |
-          docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-          docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
-          docker push 
-          heroku container:release web
+  deploy-on-heroku:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+            docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
+            docker push 
+            heroku container:release web
