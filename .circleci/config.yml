@@ -112,6 +112,7 @@ jobs:
       - run:
           command: |
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+            docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
             docker push 
             heroku container:release web
