@@ -107,7 +107,6 @@ jobs:
             docker logout
   deploy-on-heroku:
     executor: docker-publisher
-    machine: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -116,14 +115,23 @@ jobs:
           name: Load saved docker image (image.tar)
           command: docker load -i /tmp/workspace/image.tar
       - run:
-          command: |
-            echo "Login using docker"
-            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-            echo "Calling image $IMAGE_NAME"
-            docker pull $IMAGE_NAME:$CIRCLE_SHA1
-            echo "Tagging image with heroku convention"
-            docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
-            echo "Sign into container registry"
-      - run: heroku container:login
-      - run: docker push registry.heroku.com/oc-lettings-4/web
-      - run: heroku container:release web
+          name: Login using docker
+          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+      - run:
+          name: Calling image $IMAGE_NAME
+          command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
+      - run:
+          name: Tagging image with heroku convention
+          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
+      - run: 
+          name: Install heroku
+          command: bash .circleci/setup-heroku.sh
+      - run: 
+          name: Sign into container registry
+          command: heroku container:login
+      - run: 
+          name: Push Docker-based app
+          command: docker push registry.heroku.com/oc-lettings-4/web
+      - run: 
+          name: Deploy app
+          command: heroku container:release web
