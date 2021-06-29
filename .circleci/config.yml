@@ -116,7 +116,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Login using docker
-          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD" re
+          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
       - run:
           name: Calling image $IMAGE_NAME
           command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
