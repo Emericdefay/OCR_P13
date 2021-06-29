@@ -75,3 +75,20 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+
+### Déploiement
+
+Le déploiement du site sur Heroku demande de remplir plusieurs critères:
+- Avoir un compte dockerhub
+- Avoir un compte Heroku
+- Effectuer un pipeline sur CircleCI
+  - S'inscrire à CircleCI
+  - Etre membre autorisé du pipeline sur projet pour ce repo
+- Configurer les variables d'environnement suivantes
+  - DOCKERHUB_USERNAME : nom du compte dockerhub
+  - DOCKERHUB_PASSWORD : mot de passe dockerhub
+  - HEROKU_EMAIL : email du compte Heroku
+  - HEROKU_TOKEN : Clé d'API du compte Heroku (trouvable à /account)
+- Push sur la branche main pour déploiement
+

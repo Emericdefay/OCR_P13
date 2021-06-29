@@ -52,26 +52,18 @@ jobs:
           name: Create venv
           # Create virtual environment with venv
           command: python -m venv venv
-          
-      - run:
-          name: echo venv
-          # activate venv
-          command: ls venv/bin/
       - run:
           name: Activate venv
           # activate venv
           command: source venv/bin/activate
-
       - run:
           name: Install reqs
           # install requirements from requirements.txt
           command: pip install -r requirements.txt
-
       - run:
           name: Run test PEP8
           # This assumes pytest is installed via the install-package step above
           command: flake8
-          
       - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
