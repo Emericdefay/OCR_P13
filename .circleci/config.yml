@@ -12,6 +12,7 @@ executors:
     environment:
       IMAGE_NAME: emericdefay/oc-lettings-site
       GIT_HASH: $CIRCLE_SHA1
+      APP_NAME: oc-lettings-4
     docker:
       - image: cimg/python:3.8
 
@@ -30,6 +31,12 @@ workflows:
       - publish-on-dockerhub:
           requires:
             - docking
+      - deploy-on-heroku:
+          requires:
+            - publish-on-dockerhub
+          # filters: # Deploy only on main branch
+          #   branches:
+          #     only: main
 
 jobs:
   compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
@@ -99,4 +106,41 @@ jobs:
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker logout
-
+  deploy-on-heroku:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Login using docker
+          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+      - run:
+          name: Calling image $IMAGE_NAME
+          command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
+      - run:
+          name: Tagging image with heroku convention
+          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/$APP_NAME/web
+      - run: 
+          name: Install heroku
+          command: curl https://cli-assets.heroku.com/install.sh | sh
+      - run: 
+          name: Sign into heroku
+          command: |
+            cat >~/.netrc \<<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_TOKEN
+            EOF
+      - run: 
+          name: Sign into container registry
+          command: heroku container:login
+      - run: 
+          name: Push Docker-based app
+          command: docker push registry.heroku.com/$APP_NAME/web
+      - run: 
+          name: Deploy app
+          command: heroku container:release web -a $APP_NAME
