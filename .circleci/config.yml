@@ -107,6 +107,8 @@ jobs:
             docker logout
   deploy-on-heroku:
     machine: true
+    environment:
+      IMAGE_NAME: emericdefay/oc-lettings-site
     steps:
       - checkout
       - run:
