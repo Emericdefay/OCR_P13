@@ -12,6 +12,7 @@ executors:
     environment:
       IMAGE_NAME: emericdefay/oc-lettings-site
       GIT_HASH: $CIRCLE_SHA1
+      APP_NAME: oc-lettings-4
     docker:
       - image: cimg/python:3.8
 
@@ -122,7 +123,7 @@ jobs:
           command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
       - run:
           name: Tagging image with heroku convention
-          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
+          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/$APP_NAME/web
       - run: 
           name: Install heroku
           command: curl https://cli-assets.heroku.com/install.sh | sh
@@ -139,7 +140,7 @@ jobs:
           command: heroku container:login
       - run: 
           name: Push Docker-based app
-          command: docker push registry.heroku.com/oc-lettings-4/web
+          command: docker push registry.heroku.com/$APP_NAME/web
       - run: 
           name: Deploy app
-          command: heroku container:release web
+          command: heroku container:release web -a $APP_NAME
