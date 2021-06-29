@@ -142,5 +142,8 @@ jobs:
           name: Push Docker-based app
           command: docker push registry.heroku.com/$APP_NAME/web
       - run: 
+          name: Allow new port 8000
+          command: heroku config:set PORT=8000
+      - run: 
           name: Deploy app
           command: heroku container:release web -a $APP_NAME
