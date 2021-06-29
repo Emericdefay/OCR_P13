@@ -78,10 +78,10 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build docker image
-          command: docker build -t $IMAGE_NAME:$CIRCLE_SHA1 .
+          command: docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1 .
       - run:
           name: Save docker image
-          command: docker save -o image.tar $IMAGE_NAME
+          command: docker save -o image.tar $DOCKERHUB_USERNAME/$IMAGE_NAME
       - persist_to_workspace:
           root: .
           paths:
@@ -99,7 +99,7 @@ jobs:
           name: push on dockerhub
           command: |
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1
             docker logout
   deploy-on-heroku:
     executor: docker-publisher
@@ -114,11 +114,11 @@ jobs:
           name: Login using docker
           command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
       - run:
-          name: Calling image $IMAGE_NAME
-          command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
+          name: Calling image $DOCKERHUB_USERNAME/$IMAGE_NAME
+          command:  docker pull $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1
       - run:
           name: Tagging image with heroku convention
-          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/$APP_NAME/web
+          command:  docker tag $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/$APP_NAME/web
       - run: 
           name: Install heroku
           command: curl https://cli-assets.heroku.com/install.sh | sh
