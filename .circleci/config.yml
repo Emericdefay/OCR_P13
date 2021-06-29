@@ -116,7 +116,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Login using docker
-          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD" re
       - run:
           name: Calling image $IMAGE_NAME
           command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
@@ -126,6 +126,12 @@ jobs:
       - run: 
           name: Install heroku
           command: curl https://cli-assets.heroku.com/install.sh | sh
+      - run: 
+          name: Sign into heroku
+          command: |
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_TOKEN
       - run: 
           name: Sign into container registry
           command: heroku container:login
