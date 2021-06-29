@@ -30,6 +30,12 @@ workflows:
       - publish-on-dockerhub:
           requires:
             - docking
+      - deploy-on-heroku:
+          requires:
+            - publish-on-dockerhub
+          # filters: # Deploy only on main branch
+          #   branches:
+          #     only: main
 
 jobs:
   compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
@@ -99,4 +105,15 @@ jobs:
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker logout
-
+deploy-on-heroku:
+  machine: true
+    environment:
+      HEROKU_APP: "$HEROKU_APP"
+    steps:
+      - checkout
+      - run:
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+            docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
+            docker push 
+            heroku container:release web
