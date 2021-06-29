@@ -110,12 +110,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Load saved docker image (image.tar)
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
           command: |
+            echo "Login using docker"
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+            echo "Calling image $IMAGE_NAME"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
+            echo "Tagging image with heroku convention"
             docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
-            docker push 
+            echo "Sign into container registry"
+            heroku container:login
+            echo "Push docker-based app"
+            docker push registry.heroku.com/oc-lettings-4/web
+            echo "Deploy"
             heroku container:release web
