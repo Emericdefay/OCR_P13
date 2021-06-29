@@ -3,7 +3,6 @@ FROM python:3.8
 
 # setup env vars
 ENV PYTHONUNBUFFERED=1
-ENV PORT = 8000
 
 # set working directory
 WORKDIR /django
@@ -18,4 +17,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8000
 
 # Run server localy
-CMD ["python", "manage.py", "runserver", "0.0.0.0:$PORT"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
