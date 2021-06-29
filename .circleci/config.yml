@@ -10,7 +10,7 @@ orbs:
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: emericdefay/oc-lettings-site
+      IMAGE_NAME: $DOCKERHUB_USERNAME/oc-lettings-site
       GIT_HASH: $CIRCLE_SHA1
       APP_NAME: oc-lettings-4
     docker:
@@ -25,18 +25,21 @@ workflows:
       - docking:
           requires:
             - compile-and-test
-          # filters: # Build only on main branch
-          #   branches:
-          #     only: main
+          filters: # Build only on main branch
+            branches:
+              only: main
       - publish-on-dockerhub:
           requires:
             - docking
+          filters: # Build only on main branch
+            branches:
+              only: main
       - deploy-on-heroku:
           requires:
             - publish-on-dockerhub
-          # filters: # Deploy only on main branch
-          #   branches:
-          #     only: main
+          filters: # Deploy only on main branch
+            branches:
+              only: main
 
 jobs:
   compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
