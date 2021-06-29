@@ -70,6 +70,9 @@ jobs:
       - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
+          env:
+            SECRET_KEY: ${{ secrets.SECRET_KEY }} 
+            DNS_SENTRY: ${{ secrets.DNS_SENTRY }}
           command: python manage.py test
   docking: #
     executor: docker-publisher
