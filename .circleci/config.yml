@@ -1,0 +1,141 @@
+version: 2.1
+
+orbs:
+  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
+  # Orb commands and jobs help you with common scripting around a language/tool
+  # so you dont have to copy and paste it everywhere.
+  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
+  python: circleci/python@1.2
+
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: $DOCKERHUB_USERNAME/oc-lettings-site
+      GIT_HASH: $CIRCLE_SHA1
+      APP_NAME: oc-lettings-4
+    docker:
+      - image: cimg/python:3.8
+
+workflows:
+  ci:  # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run. 
+    # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows 
+    jobs:
+      - compile-and-test
+      - docking:
+          requires:
+            - compile-and-test
+          filters: # Build only on main branch
+            branches:
+              only: main
+      - publish-on-dockerhub:
+          requires:
+            - docking
+          filters: # Build only on main branch
+            branches:
+              only: main
+      - deploy-on-heroku:
+          requires:
+            - publish-on-dockerhub
+          filters: # Deploy only on main branch
+            branches:
+              only: main
+
+jobs:
+  compile-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
+    # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
+    # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
+    # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
+    # The executor is the environment in which the steps below will be executed - below will use a python 3.9 container
+    # Change the version below to your required version of python
+    executor: docker-publisher
+    steps:
+      - checkout
+      - run:
+          name: Create venv
+          # Create virtual environment with venv
+          command: python -m venv venv
+      - run:
+          name: Activate venv
+          # activate venv
+          command: source venv/bin/activate
+      - run:
+          name: Install reqs
+          # install requirements from requirements.txt
+          command: pip install -r requirements.txt
+      - run:
+          name: Run test PEP8
+          # This assumes pytest is installed via the install-package step above
+          command: flake8
+      - run:
+          name: Run tests
+          # This assumes pytest is installed via the install-package step above
+          command: python manage.py test
+  docking: #
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build docker image
+          command: docker build -t $IMAGE_NAME:$CIRCLE_SHA1 .
+      - run:
+          name: Save docker image
+          command: docker save -o image.tar $IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+  publish-on-dockerhub:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: push on dockerhub
+          command: |
+            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            docker logout
+  deploy-on-heroku:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Login using docker
+          command:  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+      - run:
+          name: Calling image $IMAGE_NAME
+          command:  docker pull $IMAGE_NAME:$CIRCLE_SHA1
+      - run:
+          name: Tagging image with heroku convention
+          command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/$APP_NAME/web
+      - run: 
+          name: Install heroku
+          command: curl https://cli-assets.heroku.com/install.sh | sh
+      - run: 
+          name: Sign into heroku
+          command: |
+            cat >~/.netrc \<<EOF
+            machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_TOKEN
+            EOF
+      - run: 
+          name: Sign into container registry
+          command: heroku container:login
+      - run: 
+          name: Push Docker-based app
+          command: docker push registry.heroku.com/$APP_NAME/web
+      - run: 
+          name: Deploy app
+          command: heroku container:release web -a $APP_NAME
