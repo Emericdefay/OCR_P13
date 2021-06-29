@@ -98,7 +98,5 @@ jobs:
           command: |
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             docker push $IMAGE_NAME:$CIRCLE_SHA1
-            docker tag $IMAGE_NAME:$CIRCLE_SHA1 $IMAGE_NAME:$CIRCLE_SHA1
-            docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker logout
 
