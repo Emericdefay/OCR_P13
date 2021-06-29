@@ -114,7 +114,7 @@ jobs:
             echo "Login using docker"
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             echo "Calling image $IMAGE_NAME"
-            docker push $IMAGE_NAME:$CIRCLE_SHA1
+            docker pull $IMAGE_NAME:$CIRCLE_SHA1
             echo "Tagging image with heroku convention"
             docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
             echo "Sign into container registry"
