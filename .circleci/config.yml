@@ -106,11 +106,12 @@ jobs:
             docker push $IMAGE_NAME:$CIRCLE_SHA1
             docker logout
   deploy-on-heroku:
-    machine: true
-    environment:
-      IMAGE_NAME: emericdefay/oc-lettings-site
+    executor: docker-publisher
     steps:
       - checkout
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           command: |
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
