@@ -108,7 +108,12 @@ jobs:
   deploy-on-heroku:
     executor: docker-publisher
     steps:
-      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load saved docker image (image.tar)
+          command: docker load -i /tmp/workspace/image.tar
       - run:
           command: |
             echo "Login using docker"
