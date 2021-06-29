@@ -107,6 +107,7 @@ jobs:
             docker logout
   deploy-on-heroku:
     executor: docker-publisher
+    machine: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -123,8 +124,6 @@ jobs:
             echo "Tagging image with heroku convention"
             docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
             echo "Sign into container registry"
-            heroku container:login
-            echo "Push docker-based app"
-            docker push registry.heroku.com/oc-lettings-4/web
-            echo "Deploy"
-            heroku container:release web
+      - run: heroku container:login
+      - run: docker push registry.heroku.com/oc-lettings-4/web
+      - run: heroku container:release web
