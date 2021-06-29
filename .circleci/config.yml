@@ -129,7 +129,7 @@ jobs:
       - run: 
           name: Sign into heroku
           command: |
-            cat >~/.netrc <<EOF
+            cat >~/.netrc \<<EOF
             machine api.heroku.com
               login $HEROKU_EMAIL
               password $HEROKU_TOKEN
