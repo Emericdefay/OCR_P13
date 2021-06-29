@@ -125,7 +125,7 @@ jobs:
           command:  docker tag $IMAGE_NAME:$CIRCLE_SHA1 registry.heroku.com/oc-lettings-4/web
       - run: 
           name: Install heroku
-          command: bash .circleci/setup-heroku.sh
+          command: sudo snap install --classic heroku
       - run: 
           name: Sign into container registry
           command: heroku container:login
