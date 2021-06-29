@@ -129,9 +129,11 @@ jobs:
       - run: 
           name: Sign into heroku
           command: |
+            cat >~/.netrc <<EOF
             machine api.heroku.com
               login $HEROKU_EMAIL
               password $HEROKU_TOKEN
+            EOF
       - run: 
           name: Sign into container registry
           command: heroku container:login
