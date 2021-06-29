@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -118,7 +118,7 @@ STATIC_URL = '/static/'
 # Sentry integration
 
 sentry_sdk.init(
-    dsn=os.environ['DNS_SENTRY'],
+    dsn=os.environ.get('DNS_SENTRY'),
     integrations=[DjangoIntegration()],
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.
