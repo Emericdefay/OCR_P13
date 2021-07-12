@@ -80,8 +80,9 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 ### Déploiement
 
 Le déploiement du site sur Heroku demande de remplir plusieurs critères:
-- Avoir un compte dockerhub
+- Avoir un compte Dockerhub
 - Avoir un compte Heroku
+- Avoir un compte Sentry
 - Effectuer un pipeline sur CircleCI
   - S'inscrire à CircleCI
   - Etre membre autorisé du pipeline sur projet pour ce repo
@@ -90,5 +91,6 @@ Le déploiement du site sur Heroku demande de remplir plusieurs critères:
   - DOCKERHUB_PASSWORD : mot de passe dockerhub
   - HEROKU_EMAIL : email du compte Heroku
   - HEROKU_TOKEN : Clé d'API du compte Heroku (trouvable à /account)
+  - DNS_SENTRY : Pour avoir une surveillances des données depuis Sentry
+  - SECRET_KEY : la clé d'encodage de Django, afin de l'isoler du code
 - Push sur la branche main pour déploiement
-
