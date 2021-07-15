@@ -115,7 +115,7 @@ jobs:
           IMAGE_NAME: oc-lettings-site
           GIT_HASH: $CIRCLE_SHA1
           APP_NAME: oc-lettings-4
-        - command: heroku config:set BUILD_NUMBER=$GIT_HASH -a $APP_NAME
+        - command: heroku config:set BUILD_NUMBER="$GIT_HASH" -a $APP_NAME
       - heroku/deploy-via-git:
           app-name: $APP_NAME
           force: true
