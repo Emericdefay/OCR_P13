@@ -113,18 +113,10 @@ jobs:
     steps:
       - checkout
       - heroku/install
-      - run: 
-          name: Sign into heroku
-          command: |
-            cat >~/.netrc \<<EOF
-            machine git.heroku.com
-              login $HEROKU_EMAIL
-              password $HEROKU_TOKEN
-            EOF
-      - run: heroku config:set BUILD_NUMBER=$CIRCLE_BRANCH -a $APP_NAME
+      - run: heroku config:set BUILD_NUMBER=$CIRCLE_BUILD_NUM -a $APP_NAME
       - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $APP_NAME
       - run: heroku config:set DNS_SENTRY=$DNS_SENTRY -a $APP_NAME
-
+      - run: heroku stack:set heroku-20
       - heroku/deploy-via-git:
-          app-name: oc-lettings-4
+          app-name: $APP_NAME
           force: true
