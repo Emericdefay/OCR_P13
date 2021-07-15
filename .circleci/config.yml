@@ -105,7 +105,7 @@ jobs:
   #             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $APP_NAME web
   #             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $APP_NAME web 
   deploy_orb:
-      executor: heroku/default
+    executor: heroku/default
     steps:
       - checkout
       - heroku/install
