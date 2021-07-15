@@ -109,7 +109,7 @@ jobs:
     steps:
       - checkout
       - heroku/install
-      - run: heroku config:set BUILD_NUMBER=$CIRCLE_SHA1 -a oc-lettings-4
+      - run: heroku config:set BUILD_NUMBER=CIRCLE_BUILD_NUM -a oc-lettings-4
       - heroku/deploy-via-git:
           app-name: oc-lettings-4
           force: true
