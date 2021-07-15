@@ -89,6 +89,8 @@ jobs:
             docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
             docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1
             docker logout
+
+  # WITHOUT HEROKU'S ORB + WITH ONLY AMD BUILD
   # deploy:
   #     machine: true
   #     steps:
@@ -104,12 +106,17 @@ jobs:
   #             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
   #             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $APP_NAME web
   #             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $APP_NAME web 
+
+  # WITH HEROKU'S ORB
   deploy_orb:
     executor: heroku/default
     steps:
       - checkout
       - heroku/install
-      - run: heroku config:set BUILD_NUMBER=CIRCLE_BUILD_NUM -a oc-lettings-4
+      - run: heroku config:set BUILD_NUMBER=CIRCLE_BUILD_NUM -a $APP_NAME
+      - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $APP_NAME
+      - run: heroku config:set DNS_SENTRY=$DNS_SENTRY -a $APP_NAME
       - heroku/deploy-via-git:
           app-name: oc-lettings-4
+          api-key: $HEROKU_TOKEN
           force: true
